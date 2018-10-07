@@ -1,0 +1,78 @@
+﻿@model EmpSys.ViewModel.EmployeeIndexViewModel
+@{
+    ViewBag.Title = "Index";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>List of Employee's</h2>
+<button class= "btn btn-success newEmployee">Add Employee</button>
+@using (@Html.BeginForm("Search", "Employee",FormMethod.Get))
+{
+    <div class="form-group" style="display: inline-block;margin-left: auto">
+        @Html.TextBoxFor(e=>e.SearchTerm,new {@class="form-control"})
+       <input type="submit" value="Search"/>
+    </div>
+}
+    <table class="table">
+    <thead>
+    <tr>
+        <th>Name</th>
+        <th>Designation</th>
+        <th>Contact</th>
+        <th>Edit</th>
+        <th>Delete</th>
+    </tr>
+    </thead>
+    <tbody>
+    @foreach (var listItem in Model.Employee)
+    {
+        <tr class="active">
+            <td>@listItem.Name</td>
+            <td>@listItem.Designation</td>
+            <td>@listItem.Contact.Number</td>
+            <td>@Html.ActionLink("Edit","Edit",new {id = listItem.Id},new {@class="btn btn-info"})</td>
+            <td><button class="btn btn-danger js-delete" data-emp="@listItem.Id">Delete</button></td>
+        </tr>
+    }
+    
+    </tbody>
+</table>
+@section scripts
+{
+    <script>
+        $(document).ready(function () {
+
+            $.ajax({
+                type: "GET",
+                url: "/api/employees",
+                success: function (data) {
+                    console.log(data);
+                },
+                error: function () {
+                    alert("error while deleting data");
+                }
+            });
+
+
+            $(".newEmployee").click(function() {
+                document.location = "@Url.Action("EmployeeForm","Employee")";
+            });
+            $(".js-delete").on("click",function() {
+                var button = $(this);
+                if (confirm("Are You sure You Want to delete the employe")) {
+                    $.ajax({
+                        type: "DELETE",
+                        url: "/api/employees/" + button.attr("data-emp"),
+                        success: function() {
+                            button.parents("tr").fadeOut(1000);
+                        },
+                        error:function() {
+                            alert("error while deleting data");
+                        }
+                    });
+                }
+            });
+        });
+        
+    </script>
+}

@@ -1,0 +1,27 @@
+﻿@model EmpSys.Models.Employee
+@{
+    ViewBag.Title = "EmployeeForm";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h2>EmployeeForm</h2>
+@Html.ValidationSummary()
+
+@using (@Html.BeginForm("Create","Employee"))
+{    
+    @Html.HiddenFor(e=>e.Id)
+    @Html.HiddenFor(e=>e.ContactId)
+    <div class="form-group">
+        @Html.LabelFor(e=>e.Name)
+        @Html.TextBoxFor(e=>e.Name,new {@class="form-control"})
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(e => e.Designation)
+        @Html.TextBoxFor(e => e.Designation, new { @class = "form-control" })
+    </div>
+    <div class="form-group">
+        @Html.LabelFor(e => e.Contact.Number)
+        @Html.TextBoxFor(e => e.Contact.Number, new { @class = "form-control" })
+    </div>
+    <button type="submit" class="btn btn-primary">Save</button>
+}
